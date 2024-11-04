@@ -102,7 +102,7 @@ if sprite and #cels >= 2 and samelayer then
     }
 
     local dlg = Dialog{
-        title = "Shift Cels",
+        title = "circular shift",
         onclose = function()
             if clickApply == false then   
                 cancelAnimation()
