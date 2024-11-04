@@ -19,6 +19,8 @@ for i = 2, #cels do
     end
 end
 
+
+
 -- Run script only if a series of cels is selected
 if sprite and #cels >= 2 and samelayer then
 
@@ -575,8 +577,8 @@ if sprite and #cels >= 2 and samelayer then
             -- Delete the preview layer when closing the dialog box
             onclose = function()
                 if previewLayer then
-                sprite:deleteLayer(previewLayer)  -- delete preview layer
-                previewLayer = nil 
+                    sprite:deleteLayer(previewLayer)  -- delete preview layer
+                    previewLayer = nil 
                 end
                 if clickApply == false then
                 if trailLayer then
@@ -923,27 +925,27 @@ if sprite and #cels >= 2 and samelayer then
         id = "apply",
         text = "Apply",
         onclick = function()
-        clickApply=true
-        app.userData.dialogSettings = {
-            easingType = dlg.data.easingType,
-            useBezier = dlg.data.useBezier,
-            changeXPosition = dlg.data.changeXPosition,
-            changeYPosition = dlg.data.changeYPosition,
-            changeXSize = dlg.data.changeXSize,
-            changeYSize = dlg.data.changeYSize,
-            controlX1 = dlg.data.controlX1,
-            controlY1 = dlg.data.controlY1,
-            controlX2 = dlg.data.controlX2,
-            controlY2 = dlg.data.controlY2,
-            trailNumSteps = dlg.data.trailNumSteps ,
-            minTrailOpacity = dlg.data.minTrailOpacity ,
-            maxTrailOpacity = dlg.data.maxTrailOpacity ,
-            minTrailLength = dlg.data.minTrailLength ,
-            maxTrailLength = dlg.data.maxTrailLength ,
-        }
-        PreApply()
-        
-        dlg:close()  -- Close the dialog after applying
+            clickApply=true
+            app.userData.dialogSettings = {
+                easingType = dlg.data.easingType,
+                useBezier = dlg.data.useBezier,
+                changeXPosition = dlg.data.changeXPosition,
+                changeYPosition = dlg.data.changeYPosition,
+                changeXSize = dlg.data.changeXSize,
+                changeYSize = dlg.data.changeYSize,
+                controlX1 = dlg.data.controlX1,
+                controlY1 = dlg.data.controlY1,
+                controlX2 = dlg.data.controlX2,
+                controlY2 = dlg.data.controlY2,
+                trailNumSteps = dlg.data.trailNumSteps ,
+                minTrailOpacity = dlg.data.minTrailOpacity ,
+                maxTrailOpacity = dlg.data.maxTrailOpacity ,
+                minTrailLength = dlg.data.minTrailLength ,
+                maxTrailLength = dlg.data.maxTrailLength ,
+            }
+            PreApply()
+            
+            dlg:close()  -- Close the dialog after applying
         end
     }
 
