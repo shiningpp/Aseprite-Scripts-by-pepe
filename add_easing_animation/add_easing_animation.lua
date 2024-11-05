@@ -593,8 +593,8 @@ if sprite and #cels >= 2 and samelayer then
         }
         
     -- The range of movement for Bezier curve control points
-    local sliderMaxValueX = sprite.width/2
-    local sliderMaxValueY = sprite.height/2
+    local sliderMaxValueX = sprite.width*2
+    local sliderMaxValueY = sprite.height*2
 
     -- Start and end position of the Bezier curve
     local startX, startY = minFrameCel.position.x, minFrameCel.position.y
@@ -953,3 +953,4 @@ if sprite and #cels >= 2 and samelayer then
     dlg:show{wait = false}
   
 end
+
