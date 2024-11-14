@@ -90,8 +90,8 @@ if sprite and #cels >= 2 and samelayer then
     for i = 1,#cels do
         for _, cel in ipairs(cels) do
             if cel.frame.frameNumber == minFrameNumber + i - 1 then
-                local fullImage = Image(sprite.spec)  -- 创建与画布相同尺寸的图像
-                fullImage:drawImage(cel.image, cel.bounds.x, cel.bounds.y)  -- 在正确位置绘制cel的内容
+                local fullImage = Image(sprite.spec)  
+                fullImage:drawImage(cel.image, cel.bounds.x, cel.bounds.y)  
                 table.insert(celimagebyFrames , fullImage)
                 break
             end
