@@ -90,7 +90,9 @@ if sprite and #cels >= 2 and samelayer then
     for i = 1,#cels do
         for _, cel in ipairs(cels) do
             if cel.frame.frameNumber == minFrameNumber + i - 1 then
-                table.insert(celimagebyFrames , Image(cel.image))
+                local fullImage = Image(sprite.spec)  -- 创建与画布相同尺寸的图像
+                fullImage:drawImage(cel.image, cel.bounds.x, cel.bounds.y)  -- 在正确位置绘制cel的内容
+                table.insert(celimagebyFrames , fullImage)
                 break
             end
         end
@@ -111,6 +113,34 @@ if sprite and #cels >= 2 and samelayer then
         end
     }
 
+    -- crop cels
+    local function calculateTrimBounds(image)
+        local minX, minY, maxX, maxY = image.width, image.height, 0, 0
+        local hasContent = false
+    
+      
+        for y = 0, image.height - 1 do
+            for x = 0, image.width - 1 do
+                local pixel = image:getPixel(x, y)
+                if app.pixelColor.rgbaA(pixel) > 0 then 
+                    minX = math.min(minX, x)
+                    minY = math.min(minY, y)
+                    maxX = math.max(maxX, x)
+                    maxY = math.max(maxY, y)
+                    hasContent = true
+                end
+            end
+        end
+    
+        if hasContent then
+            return minX, minY, maxX, maxY
+        else
+            return nil 
+        end
+    end
+
+    
+
     local function PreApply()
         local shiftAmount = tonumber(dlg.data.shiftAmount)
         if not shiftAmount then
@@ -119,16 +149,40 @@ if sprite and #cels >= 2 and samelayer then
             for i=1 ,#cels do
                 cels[i].image:clear()
                 if (cels[i].frame.frameNumber -shiftAmount >= minFrameNumber ) and (cels[i].frame.frameNumber -shiftAmount <= maxFrameNumber) then
+                    cels[i].image = Image(sprite.spec)
                     cels[i].image:drawImage(celimagebyFrames[cels[i].frame.frameNumber - minFrameNumber + 1 - shiftAmount],0, 0)
-                    cels[i].position = Point(celPositionbyFrames [cels[i].frame.frameNumber - minFrameNumber + 1- shiftAmount].x, celPositionbyFrames [cels[i].frame.frameNumber - minFrameNumber + 1- shiftAmount].y)
+                    cels[i].position = Point(0,0)
                 elseif cels[i].frame.frameNumber -shiftAmount < minFrameNumber then
+                    cels[i].image = Image(sprite.spec)
                     cels[i].image:drawImage(celimagebyFrames[cels[i].frame.frameNumber - minFrameNumber + 1 - shiftAmount + maxFrameNumber - minFrameNumber + 1],0, 0)
-                    cels[i].position = Point(celPositionbyFrames [cels[i].frame.frameNumber - minFrameNumber + 1- shiftAmount + maxFrameNumber - minFrameNumber + 1].x, celPositionbyFrames [cels[i].frame.frameNumber - minFrameNumber + 1- shiftAmount + maxFrameNumber - minFrameNumber + 1].y)
+                    cels[i].position = Point(0,0)
                 else
+                    cels[i].image = Image(sprite.spec)
                     cels[i].image:drawImage(celimagebyFrames[cels[i].frame.frameNumber - minFrameNumber + 1 - shiftAmount - (maxFrameNumber - minFrameNumber + 1)],0, 0)
-                    cels[i].position = Point(celPositionbyFrames [cels[i].frame.frameNumber - minFrameNumber + 1- shiftAmount - (maxFrameNumber - minFrameNumber + 1)].x, celPositionbyFrames [cels[i].frame.frameNumber - minFrameNumber + 1- shiftAmount - (maxFrameNumber - minFrameNumber + 1)].y)
+                    cels[i].position = Point(0,0)
                 end
             end
+
+            --crop cels
+            for _, cel in ipairs(cels) do
+                local image = cel.image
+                local minX, minY, maxX, maxY = calculateTrimBounds(image)
+
+                if minX then 
+                    local newWidth = maxX - minX + 1
+                    local newHeight = maxY - minY + 1
+
+                    local trimmedImage = Image(newWidth, newHeight)
+                    trimmedImage:drawImage(image, -minX, -minY)
+                    cel.image = trimmedImage
+
+                    cel.position = Point(cel.position.x + minX, cel.position.y + minY)
+                end
+            end
+
+
+
+
             app.refresh()
         end
     end
