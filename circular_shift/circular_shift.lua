@@ -24,7 +24,31 @@ end
 -- Run script only if a series of cels is selected
 if sprite and #cels >= 2 and samelayer then
 
+    -- crop cels
+    local function calculateTrimBounds(image)
+        local minX, minY, maxX, maxY = image.width, image.height, 0, 0
+        local hasContent = false
 
+    
+        for y = 0, image.height - 1 do
+            for x = 0, image.width - 1 do
+                local pixel = image:getPixel(x, y)
+                if app.pixelColor.rgbaA(pixel) > 0 then 
+                    minX = math.min(minX, x)
+                    minY = math.min(minY, y)
+                    maxX = math.max(maxX, x)
+                    maxY = math.max(maxY, y)
+                    hasContent = true
+                end
+            end
+        end
+
+        if hasContent then
+            return minX, minY, maxX, maxY
+        else
+            return nil 
+        end
+    end
     
     -- Save original cel Position and image for cancel changes
     local celPosition = {}
@@ -34,15 +58,33 @@ if sprite and #cels >= 2 and samelayer then
 
     local celimage = {}
     for _, cel in ipairs(cels) do
-        table.insert(celimage, Image(cel.image))
+        local fullImage = Image(sprite.spec)  
+         fullImage:drawImage(cel.image, cel.bounds.x, cel.bounds.y)  
+        table.insert(celimage, fullImage)
     end
 
     -- Cancel changes
     local function cancelAnimation()
         for i=1 ,#cels do
             cels[i].image:clear()
+            cels[i].image = Image(sprite.spec)
             cels[i].image:drawImage(celimage[i],0, 0)
-            cels[i].position = Point(celPosition [i].x, celPosition [i].y)
+            cels[i].position = Point(0, 0)
+        end
+        for _, cel in ipairs(cels) do
+            local image = cel.image
+            local minX, minY, maxX, maxY = calculateTrimBounds(image)
+
+            if minX then 
+                local newWidth = maxX - minX + 1
+                local newHeight = maxY - minY + 1
+
+                local trimmedImage = Image(newWidth, newHeight)
+                trimmedImage:drawImage(image, -minX, -minY)
+                cel.image = trimmedImage
+
+                cel.position = Point(cel.position.x + minX, cel.position.y + minY)
+            end
         end
     end
 
@@ -113,31 +155,7 @@ if sprite and #cels >= 2 and samelayer then
         end
     }
 
-    -- crop cels
-    local function calculateTrimBounds(image)
-        local minX, minY, maxX, maxY = image.width, image.height, 0, 0
-        local hasContent = false
     
-      
-        for y = 0, image.height - 1 do
-            for x = 0, image.width - 1 do
-                local pixel = image:getPixel(x, y)
-                if app.pixelColor.rgbaA(pixel) > 0 then 
-                    minX = math.min(minX, x)
-                    minY = math.min(minY, y)
-                    maxX = math.max(maxX, x)
-                    maxY = math.max(maxY, y)
-                    hasContent = true
-                end
-            end
-        end
-    
-        if hasContent then
-            return minX, minY, maxX, maxY
-        else
-            return nil 
-        end
-    end
 
     
 
