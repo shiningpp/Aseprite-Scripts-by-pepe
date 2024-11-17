@@ -31,28 +31,71 @@ if sprite and #cels >= 2 and samelayer then
     local maxFrameCel = nil
     local maxFrameNumber = -math.huge
 
+    -- crop cels
+    local function calculateTrimBounds(image)
+        local minX, minY, maxX, maxY = image.width, image.height, 0, 0
+        local hasContent = false
+
+    
+        for y = 0, image.height - 1 do
+            for x = 0, image.width - 1 do
+                local pixel = image:getPixel(x, y)
+                if app.pixelColor.rgbaA(pixel) > 0 then 
+                    minX = math.min(minX, x)
+                    minY = math.min(minY, y)
+                    maxX = math.max(maxX, x)
+                    maxY = math.max(maxY, y)
+                    hasContent = true
+                end
+            end
+        end
+
+        if hasContent then
+            return minX, minY, maxX, maxY
+        else
+            return nil 
+        end
+    end
 
     -- Save original cel Position and size for cancel changes
     local celPosition = {}
     for _, cel in ipairs(cels) do
         table.insert(celPosition , cel.position)
     end
-    --local celSize = {}
-    --for _, cel in ipairs(cels) do
-    --    table.insert(celSize , Point(cel.image.width,cel.image.height))
-    --end
+    local celSize = {}
+    for _, cel in ipairs(cels) do
+        table.insert(celSize , Point(cel.image.width,cel.image.height))
+    end
 
     local celimage = {}
     for _, cel in ipairs(cels) do
-        table.insert(celimage, Image(cel.image))
+        local fullImage = Image(sprite.spec)  
+         fullImage:drawImage(cel.image, cel.bounds.x, cel.bounds.y)  
+        table.insert(celimage, fullImage)
     end
 
     -- Cancel changes on position and size
     local function cancelAnimation()
         for i=1 ,#cels do
             cels[i].image:clear()
+            cels[i].image = Image(sprite.spec)
             cels[i].image:drawImage(celimage[i],0, 0)
-            cels[i].position = Point(celPosition [i].x, celPosition [i].y)
+            cels[i].position = Point(0, 0)
+        end
+        for _, cel in ipairs(cels) do
+            local image = cel.image
+            local minX, minY, maxX, maxY = calculateTrimBounds(image)
+
+            if minX then 
+                local newWidth = maxX - minX + 1
+                local newHeight = maxY - minY + 1
+
+                local trimmedImage = Image(newWidth, newHeight)
+                trimmedImage:drawImage(image, -minX, -minY)
+                cel.image = trimmedImage
+
+                cel.position = Point(cel.position.x + minX, cel.position.y + minY)
+            end
         end
     end
                 
@@ -96,6 +139,7 @@ if sprite and #cels >= 2 and samelayer then
     -- Create a new layer for trail
     local trailLayer = sprite:newLayer()
     trailLayer.name = "Trailing Effect"
+    trailLayer.stackIndex = cels[1].layer.stackIndex
 
 
     -- Initialize or read previous userData settings
@@ -116,6 +160,7 @@ if sprite and #cels >= 2 and samelayer then
         maxTrailOpacity = 255,
         minTrailLength = 0,
         maxTrailLength = 2,
+        createtrail = false,
     
     }
 
@@ -185,8 +230,8 @@ if sprite and #cels >= 2 and samelayer then
 
         local startX, startY = startCel.position.x, startCel.position.y
         local endX, endY = endCel.position.x, endCel.position.y
-        --local startWidth, startHeight = startCel.image.width, startCel.image.height
-        --local endWidth, endHeight = endCel.image.width, endCel.image.height
+        local startWidth, startHeight = startCel.image.width, startCel.image.height
+        local endWidth, endHeight = endCel.image.width, endCel.image.height
 
         -- Define the pow function if not available
         local function pow(x, y)
@@ -352,14 +397,14 @@ if sprite and #cels >= 2 and samelayer then
                     local newY = (1 - t)^3 * startY + 3 * (1 - t)^2 * t * controlY1 + 3 * (1 - t) * t^2 * controlY2 + t^3 * endY
                     cel.position = Point(cel.position.x, newY)
                 end
-                --if changeXSize then
-                --    local newWidth = startWidth + t * (endWidth - startWidth)
-                --    cel.image:resize(newWidth,cel.image.height)
-                --end
-                --if changeYSize then
-                --    local newHeight = startHeight + t * (endHeight - startHeight)
-                --    cel.image:resize(cel.image.width,newHeight)
-                --end
+                if changeXSize then
+                    local newWidth = startWidth + t * (endWidth - startWidth)
+                    cel.image:resize(newWidth,cel.image.height)
+                end
+                if changeYSize then
+                    local newHeight = startHeight + t * (endHeight - startHeight)
+                    cel.image:resize(cel.image.width,newHeight)
+                end
                         
             -- Move along straight line
             else
@@ -373,14 +418,14 @@ if sprite and #cels >= 2 and samelayer then
                     local newY = startY + t * (endY - startY)
                     cel.position = Point(cel.position.x, newY)
                 end
-                --if changeXSize then
-                --    local newWidth = startWidth + t * (endWidth - startWidth)
-                --    cel.image:resize(newWidth,cel.image.height)
-                --end
-                --if changeYSize then
-                --    local newHeight = startHeight + t * (endHeight - startHeight)
-                --    cel.image:resize(cel.image.width,newHeight)
-                --end
+                if changeXSize then
+                    local newWidth = startWidth + t * (endWidth - startWidth)
+                    cel.image:resize(newWidth,cel.image.height)
+                end
+                if changeYSize then
+                    local newHeight = startHeight + t * (endHeight - startHeight)
+                    cel.image:resize(cel.image.width,newHeight)
+                end
             end
         
         end
@@ -396,12 +441,12 @@ if sprite and #cels >= 2 and samelayer then
             if changeYPosition then
                 maxFrameCel.position = Point(maxFrameCel .position.x, startY)
             end
-            --if changeXSize then
-            --    maxFrameCel.image:resize(startWidth, maxFrameCel .image.height)
-            --end
-            --if changeYSize then
-            --    maxFrameCel .image:resize(maxFrameCel .image.width, startHeight)
-            --end
+            if changeXSize then
+                maxFrameCel.image:resize(startWidth, maxFrameCel .image.height)
+            end
+            if changeYSize then
+                maxFrameCel .image:resize(maxFrameCel .image.width, startHeight)
+            end
         end
         
         -- Refresh the app to reflect changes
@@ -581,13 +626,20 @@ if sprite and #cels >= 2 and samelayer then
                     previewLayer = nil 
                 end
                 if clickApply == false then
-                if trailLayer then
-                    sprite:deleteLayer(trailLayer)
-                    trailLayer=nil
+                    if trailLayer then
+                        sprite:deleteLayer(trailLayer)
+                        trailLayer=nil
+                    end
+                    cancelAnimation()
+                else
+                    if trailLayer then
+                        if trailLayer.isVisible == false then
+                            sprite:deleteLayer(trailLayer)
+                            trailLayer=nil
+                        end
+                    end
                 end
-               
-                cancelAnimation()
-                end
+
                 app.refresh()
             end
         }
@@ -665,6 +717,24 @@ if sprite and #cels >= 2 and samelayer then
     local function PreApply()
         animateCels(dlg.data.easingType, dlg.data.changeXPosition, dlg.data.changeYPosition, dlg.data.changeXSize, dlg.data.changeYSize,  (startX + (endX - startX) / 3 + dlg.data.controlX1 ), (startY + dlg.data.controlY1), (startX + 2 * (endX - startX) / 3 + dlg.data.controlX2 ), (endY + dlg.data.controlY2), dlg.data.useBezier)
         AddTrail(dlg.data.useBezier,  dlg.data.changeXPosition, dlg.data.changeYPosition,(startX + (endX - startX) / 3 + dlg.data.controlX1 ), (startY + dlg.data.controlY1), (startX + 2 * (endX - startX) / 3 + dlg.data.controlX2 ), (endY + dlg.data.controlY2), dlg.data.trailNumSteps , math.min(dlg.data.minTrailOpacity, dlg.data.maxTrailOpacity), math.max(dlg.data.minTrailOpacity, dlg.data.maxTrailOpacity), math.min(dlg.data.minTrailLength, dlg.data.maxTrailLength), math.max(dlg.data.minTrailLength, dlg.data.maxTrailLength) )
+        trailLayer.isVisible = dlg.data.createtrail
+        --crop cels
+        for _, cel in ipairs(cels) do
+            local image = cel.image
+            local minX, minY, maxX, maxY = calculateTrimBounds(image)
+
+            if minX then 
+                local newWidth = maxX - minX + 1
+                local newHeight = maxY - minY + 1
+
+                local trimmedImage = Image(newWidth, newHeight)
+                trimmedImage:drawImage(image, -minX, -minY)
+                cel.image = trimmedImage
+
+                cel.position = Point(cel.position.x + minX, cel.position.y + minY)
+            end
+        end
+    
     end
     
     -- Adjustable parameters for the user
@@ -804,6 +874,19 @@ if sprite and #cels >= 2 and samelayer then
 
     dlg:separator{id= "Movement Trail", text = "Movement Trail", tooltip = "Movement Trail will be created When both changeXPosition and changeYPosition are selected"}
 
+    dlg:check{
+        id = "createtrail",
+        text = "Create Trail",
+        selected = previousSettings.createtrail or false,
+        onclick = function()	
+            if dlg.data.createtrail == false then
+                trailLayer.isVisible = false
+            else
+                trailLayer.isVisible = true
+            end
+        end 
+        }
+
     dlg:label{id = "trailSteps", text = "Trail Steps"}
 
     -- slider:trailNumSteps
@@ -868,33 +951,33 @@ if sprite and #cels >= 2 and samelayer then
     }
 
 
-    --dlg:separator{id= "Add Scaling Animation", text = "Add Scaling Animation"}
+    dlg:separator{id= "Add Scaling Animation", text = "Add Scaling Animation"}
 
     -- check:changeXSize
-    --dlg:check{
-    --    id = "changeXSize", 
-    --    text = "Change X Size", 
-    --    selected = previousSettings.changeXSize or false ,
-    --    onclick = function()
-    --        if dlg.data.changeXSize == false then
-    --            cancelAnimation()
-    --        end
-    --        PreApply()
-    --    end
-    --}
+    dlg:check{
+    id = "changeXSize", 
+    text = "Change X Size", 
+    selected = previousSettings.changeXSize or false ,
+    onclick = function()
+        if dlg.data.changeXSize == false then
+            cancelAnimation()
+        end
+        PreApply()
+    end
+    }
 
     -- check:changeYSize
-    --dlg:check{
-    --    id = "changeYSize",
-    --    text = "Change Y Size",
-    --    selected = previousSettings.changeYSize or false,
-    --    onclick = function()	
-    --        if dlg.data.changeYSize == false then
-    --            cancelAnimation()
-    --        end
-    --        PreApply()
-    --    end 
-    --}
+    dlg:check{
+    id = "changeYSize",
+    text = "Change Y Size",
+    selected = previousSettings.changeYSize or false,
+    onclick = function()	
+        if dlg.data.changeYSize == false then
+            cancelAnimation()
+        end
+        PreApply()
+    end 
+    }
 
     dlg:separator{id= "Easing Type", text = "Easing Type"}
 
@@ -906,6 +989,7 @@ if sprite and #cels >= 2 and samelayer then
         onchange = function()
             local selected = dlg.data.easingType
             dlg:modify{id="curveDescription", text=easingDescriptions[selected]}
+            cancelAnimation()
             PreApply()
         end
     }
@@ -942,6 +1026,7 @@ if sprite and #cels >= 2 and samelayer then
                 maxTrailOpacity = dlg.data.maxTrailOpacity ,
                 minTrailLength = dlg.data.minTrailLength ,
                 maxTrailLength = dlg.data.maxTrailLength ,
+                createtrail = dlg.data.createtrail,
             }
             PreApply()
             
