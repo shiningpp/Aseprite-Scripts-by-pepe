@@ -44,13 +44,13 @@ Edit → Preferences → Extensions → Add Extension → 选择文件（直接�
 <img src="/fix_pen_kit/fix_pen_kit_example_1.gif" alt="图片描述" width="500">
 
 **参数说明**
-- Selection Color  
+- **Selection Color**  
 绘制处理区域时使用的笔刷颜色。建议半透明、和图像颜色反差较大的颜色。不能设置成图像中有的颜色，否则无法获得正确的处理区域。
-- Fill Color  
+- **Fill Color**  
 平滑轮廓时，有时需要补充填充一些像素。可以指定填充所用的颜色，或者勾选`Auto Fill Color`自动计算填充颜色。
-- Window  
+- **Window**  
 可以理解为平滑程度。对一个区域重复进行多次平滑时，这个值决定了所能达到的最大平滑程度。但当值很大时有时反而会出现不平滑。
-- Iteration  
+- **Iteration**  
 平滑次数。一般设为1即可。大于1时，绘制一笔就可以达到反复平滑多次的效果。
 
 **对处理区域的要求**
@@ -63,12 +63,12 @@ Edit → Preferences → Extensions → Add Extension → 选择文件（直接�
 <img src="/fix_pen_kit/fix_pen_kit_example_2.gif" alt="图片描述" width="500">
 
 **参数说明**
-- Selection Color  
+- **Selection Color**  
 与Edge Smoother Pen相同
-- Line Color 、 Line Color Threshold 
+- **Line Color 、 Line Color Threshold**   
 需要被识别为线条的颜色、容差。没有可以识别的线条时，仅做清理杂色的处理。  
 线条容差有一个最合适的值。太大时会将整个区域识别为线条，导致没有效果。
-- Isolation Strictness  
+- **Isolation Strictness**  
 清理杂色（孤立像素）时，判断是否为孤立像素时的严格程度。例如：
 ![图片描述](fix_pen_kit/fix_pen_kit_manual_2.png)
 
