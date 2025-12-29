@@ -10,7 +10,7 @@ Download the Lua file and copy it to the Aseprite scripts folder.
 ### Extensions
 - Fix Pen Kit
 
-Edit → Preferences → Extensions → Add Extension → Select plugin (choose the .zip file directly without unzipping) → Apply
+Edit → Preferences → Extensions → Add Extension → Select plugin (choose the .zip file directly without unzipping) → Apply.
 The plugin name will appear in the Edit menu. Click to use it.
 
 ## add_easing_animation
