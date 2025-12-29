@@ -1,5 +1,5 @@
 # Aseprite Scripts by pepe
-lua脚本插件。可以自由使用、更改。
+Aseprite脚本插件（代码为ai辅助编写）。可以自由使用。
 
 ## 如何导入
 ### 脚本（Scripts）
