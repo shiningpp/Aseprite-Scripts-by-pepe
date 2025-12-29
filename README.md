@@ -2,7 +2,14 @@
 Custom LUA scripts for Aseprite. Feel free to use!
 
 ## How to Use
+### Scripts
+- Add Easing Animation
+- Circular Shift
 Download the Lua file and copy it to the Aseprite scripts folder.
+### Extensions
+- Fix Pen Kit
+Edit → Preferences → Extensions → Add Extension → Select plugin (choose the .zip file directly without unzipping) → Apply
+The plugin name will appear in the Edit menu. Click to use it.
 
 ## add_easing_animation
 - Select **multiple cels in the same layer** and run the script. Animations for the intermediate cels will be generated based on the position of the images in the first and last cels.
