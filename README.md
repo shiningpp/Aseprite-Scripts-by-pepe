@@ -5,6 +5,7 @@ Aseprite脚本插件（代码为ai辅助编写）。可以自由使用。
 ### 脚本（Scripts）
 - Add Easing Animation
 - Circular Shift
+- Spine to Aseprite
 
 下载对应的.lua文件，放入Aseprite的脚本文件中。
 ### 扩展（Extensions）
@@ -82,3 +83,11 @@ Edit → Preferences → Extensions → Add Extension → 选择文件（直接�
 >⚠️切换打开的文件时，需要重新打开Fix Pen Kit。  
 >⚠️图像大时处理会变慢。
 
+## Spine to Aseprite
+读取Spine导出的骨骼动画（json文件），将动画导入到Aseprite中。
+![图片描述](spine_to_aseprite/spine_to_aseprite_1.gif)
+- Aseprite中，应已有和Spine中的各个attachment**名称一致**的图层。且各个图片的位置与spine中的**setup位置**相同。
+- Spine中，如果骨骼的开头带有“skip”字段，将会跳过这个骨骼的处理。（当需要忽略一些骨骼的动画时使用）
+  
+>⚠️不支持骨骼的**非等比例缩放**。
+>⚠️Spine的动画中，建议在第0帧给所有通道打上关键帧。
