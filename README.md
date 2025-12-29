@@ -85,7 +85,7 @@ Edit → Preferences → Extensions → Add Extension → 选择文件（直接�
 
 ## Spine to Aseprite
 读取Spine导出的骨骼动画（json文件），将动画导入到Aseprite中。
-![图片描述](spine_to_aseprite/spine_to_aseprite_1.gif)
+![图片描述](spine_to_aseprite/spine_to_aseprite_example_1.gif)
 - Aseprite中，应已有和Spine中的各个attachment**名称一致**的图层。且各个图片的位置与spine中的**setup位置**相同。
 - Spine中，如果骨骼的开头带有“skip”字段，将会跳过这个骨骼的处理。（当需要忽略一些骨骼的动画时使用）
   
