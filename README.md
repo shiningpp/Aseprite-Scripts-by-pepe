@@ -5,9 +5,11 @@ Custom LUA scripts for Aseprite. Feel free to use!
 ### Scripts
 - Add Easing Animation
 - Circular Shift
+
 Download the Lua file and copy it to the Aseprite scripts folder.
 ### Extensions
 - Fix Pen Kit
+
 Edit → Preferences → Extensions → Add Extension → Select plugin (choose the .zip file directly without unzipping) → Apply
 The plugin name will appear in the Edit menu. Click to use it.
 
