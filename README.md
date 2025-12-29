@@ -16,8 +16,8 @@ Edit → Preferences → Extensions → Add Extension → 选择文件（直接�
 ## Add Easing Animation
 给cel序列添加位置和尺寸的补间动画。  
 运动路径可以是曲线。支持各种缓动补间方式，且可以生成残影拖尾。  
-![图片描述](add_easing_animation/example1.gif)
-![图片描述](add_easing_animation/example2.gif)
+<img src="/add_easing_animation/example1.gif" alt="图片描述" width="500">
+<img src="/add_easing_animation/example2.gif" alt="图片描述" width="500">
 #### 使用方法
 - 选择一个图层的多个连续cel后调用脚本，将根据第一个cel和最后一个cel中图像的位置和尺寸生成中间各单元格的动画。
 - 位置以**左上角顶点**为基准，而不是图像的中心。
@@ -29,7 +29,7 @@ Edit → Preferences → Extensions → Add Extension → 选择文件（直接�
 
 ## Circular Shift
 循环错帧。例如：当移动cel时，若最后方的cel超出了循环的范围，就将它们移动到最前方，保证循环完整。
-![图片描述](circular_shift/example.gif)
+<img src="/circular_shift/example.gif" alt="图片描述" width="500">
 #### 使用方法
 - 选择一个图层的多个连续cel后调用脚本。选中的cel将会被整体向前或向后移动，同时保证循环的完整。
 
@@ -40,8 +40,8 @@ Edit → Preferences → Extensions → Add Extension → 选择文件（直接�
 ### 1.Regular Pen 普通笔刷
 和普通笔刷没有区别。
 ### 2.Edge Smoother Pen 平滑轮廓笔  
-用笔刷工具绘制处理区域。将区域内的轮廓修改得更为平滑。
-![图片描述](fix_pen_kit/fix_pen_kit_example_1.gif)
+用笔刷工具绘制处理区域。将区域内的轮廓修改得更为平滑。  
+<img src="/fix_pen_kit/fix_pen_kit_example_1.gif" alt="图片描述" width="500">
 
 **参数说明**
 - Selection Color  
@@ -60,7 +60,7 @@ Edit → Preferences → Extensions → Add Extension → 选择文件（直接�
 ![图片描述](fix_pen_kit/fix_pen_kit_manual_1.png)
 ### 3.Clean Pen 清理笔
 用笔刷工具绘制处理区域。在区域内，识别出线条部分，将断裂的线稿修补完整，并清理杂色。
-![图片描述](fix_pen_kit/fix_pen_kit_example_2.gif)
+<img src="/fix_pen_kit/fix_pen_kit_example_2.gif" alt="图片描述" width="500">
 
 **参数说明**
 - Selection Color  
