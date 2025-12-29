@@ -89,7 +89,7 @@ Edit → Preferences → Extensions → Add Extension → 选择文件（直接�
 - Aseprite中，应已有和Spine中的各个attachment**名称一致**的图层。且各个图片的位置与spine中的**setup位置**相同。
 - Spine中，如果骨骼的开头带有“skip”字段，将会跳过这个骨骼的处理。（当需要忽略一些骨骼的动画时使用）
   
->⚠️不支持骨骼的**非等比例缩放**。  
+>⚠️不支持骨骼的**倾斜**和**非等比例缩放**。  
 >⚠️Spine的动画中，建议在第0帧给所有通道打上关键帧。
 
 ### 补充
